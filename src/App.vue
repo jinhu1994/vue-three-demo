@@ -12,14 +12,14 @@ export default {
 <style>
 .page-des {
   width: 100%;
-  height: 64px;
-  margin: 18px auto;
+  height: 32px;
+  margin: 9px auto;
   font-size: 24px;
-  line-height: 64px;
+  line-height: 32px;
   text-align: center;
 }
 
 .three-area {
-  height: calc(100vh - 150px);
+  height: calc(100vh - 100px);
 }
 </style>

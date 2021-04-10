@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="page-des">使用VTKLoader加载器加载3D模型</div>
+    <div class="page-des">使用VTKLoader加载器加载3D兔子模型</div>
     <div
       id="vtkLoader"
       class="three-area"
@@ -37,7 +37,8 @@ export default {
       let _this = this
       const container = document.getElementById('vtkLoader')
       this.stats = new Stats() // JavaScript性能监视器
-      this.stats.domElement.style.position = 'relative'
+      this.stats.domElement.style.position = 'absolute'
+      this.stats.domElement.style.top = '50px'
       this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
       container.appendChild(this.stats.domElement)
 
@@ -82,7 +83,7 @@ export default {
       this.stats.begin()
       this.renderer.clear()
       this.renderer.render(this.scene, this.camera)
-      if(this.mesh){
+      if (this.mesh) {
         this.mesh.rotation.y += 0.01
       }
       this.stats.end()

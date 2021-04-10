@@ -36,7 +36,8 @@ export default {
     init() {
       let container = document.getElementById('rotateBox')
       this.stats = new Stats() // JavaScript性能监视器
-      this.stats.domElement.style.position = 'relative'
+      this.stats.domElement.style.position = 'absolute'
+      this.stats.domElement.style.top = '50px'
       this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
       container.appendChild(this.stats.domElement)
       /**
@@ -71,7 +72,7 @@ export default {
       container.appendChild(this.renderer.domElement)
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
-    //   window.addEventListener('resize', () => this.onWindowResize());
+      //   window.addEventListener('resize', () => this.onWindowResize());
 
     },
 

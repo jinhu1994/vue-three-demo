@@ -86,6 +86,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/bufferGeometry',
+    component: Layout,
+    redirect: '/bufferGeometry',
+    children: [{
+      path: 'bufferGeometry',
+      name: 'BufferGeometry',
+      component: () => import('@/views/bufferGeometry/index'),
+      meta: { title: 'bufferGeometry', icon: 'nested' }
+    }]
+  },
+
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
