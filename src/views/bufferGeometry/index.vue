@@ -29,6 +29,13 @@ export default {
       this.render()
     }
   },
+//   destroyed() {
+//     this.camera = null
+//     this.scene = null
+//     this.renderer = null
+//     this.mesh = null
+//     this.stats = null
+//   },
   methods: {
     init() {
       let _this = this
@@ -43,6 +50,13 @@ export default {
       _this.camera.position.z = 2750;
 
       _this.scene = new THREE.Scene();
+
+      /**
+       * Fog类定义的是线性雾，雾的密度是随着距离线性增大的，即场景中物体雾化效果随着随距离线性变化。
+       * 构造函数雾Fog(color,near,far)的三个参数分别对应雾对象Fog的三个属性.color、.near和.far。
+       * .color属性表示雾的颜色，比如设置为红色，场景中远处物体为黑色，场景中最近处距离物体是自身颜色，
+       * 最远和最近之间的物体颜色是物体本身颜色和雾颜色的混合效果。
+       */
       _this.scene.fog = new THREE.Fog(0x050505, 2000, 3500);
 
       // 设置环境光  环境光会均匀的照亮场景中的所有物体。
@@ -117,7 +131,6 @@ export default {
         positions[i + 8] = cz;
 
         // flat face normals
-
         pA.set(ax, ay, az);
         pB.set(bx, by, bz);
         pC.set(cx, cy, cz);
@@ -181,7 +194,7 @@ export default {
 
       //
 
-      _this.renderer = new THREE.WebGLRenderer({ antialias: false });
+      _this.renderer = new THREE.WebGLRenderer({ antialias: true });
       _this.renderer.setClearColor(_this.scene.fog.color);
       _this.renderer.setPixelRatio(window.devicePixelRatio);
       _this.renderer.setSize(container.clientWidth, container.clientHeight);
