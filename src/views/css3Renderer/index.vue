@@ -11,9 +11,8 @@
 
 <script>
 import * as THREE from 'three'
-import TWEEN from '@tweenjs/tween.js'
-import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer'
-import CSS3DObject from 'three-css3drenderer';
+import TWEEN from '@tweenjs/tween.js' // 是使用 JavaScript 中的一个简单的补间动画库，支持数字、对象的属性和 CSS 样式属性的赋值。
+import { CSS3DObject, CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer'
 export default {
   data() {
     return {
@@ -26,7 +25,6 @@ export default {
       rotSpeed: 0.05,
       objects: [],
       targets: { grid: [], sphere: [], helix: [] }
-
     }
   },
   mounted() {
@@ -76,7 +74,7 @@ export default {
         _this.targets.grid.push(object);
       }
 
-      scene.add(group);
+      _this.scene.add(_this.group);
 
       // sphere
       var vector = new THREE.Vector3();
@@ -123,33 +121,34 @@ export default {
 
       }
 
-      transform(_this.targets.sphere, _this.duration);
+      _this.transform(_this.targets.sphere, _this.duration);
 
       setTimeout(function () {
-        transform(_this.targets.grid, _this.duration);
-      }, duration + 500);
+        _this.transform(_this.targets.grid, _this.duration);
+      }, _this.duration + 500);
 
       setTimeout(function () {
-        transform(_this.targets.helix, _this.duration);
-      }, duration * 2 + 1000);
+        _this.transform(_this.targets.helix, _this.duration);
+      }, _this.duration * 2 + 1000);
 
-      container.addEventListener('resize', onWindowResize, false);
+      container.addEventListener('resize', _this.onWindowResize(), false);
     },
 
 
     onWindowResize() {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+      let _this = this
+      _this.renderer.setSize(window.innerWidth, window.innerHeight);
+      _this.camera.aspect = window.innerWidth / window.innerHeight;
+      _this.camera.updateProjectionMatrix();
     },
 
     transform(targets, duration) {
 
       TWEEN.removeAll();
 
-      for (var i = 0; i < objects.length; i++) {
+      for (var i = 0; i < this.objects.length; i++) {
 
-        var object = objects[i];
+        var object = this.objects[i];
         var target = targets[i];
 
         new TWEEN.Tween(object.position)
@@ -168,7 +167,7 @@ export default {
     animate() {
       let _this = this
       _this.group.rotation.y += _this.rotSpeed;
-      requestAnimationFrame(animate);
+      requestAnimationFrame(this.animate);
       TWEEN.update();
       _this.renderer.render(_this.scene, _this.camera);
     }
@@ -176,14 +175,14 @@ export default {
 }
 </script>
 
-<style scoped>
-.container {
+<style>
+.css3 {
   background: #000;
 }
 .element {
   width: 80px;
   height: 100px;
-  animation: blink 5s ease-in infinite;
+  animation: blink 10s ease-in infinite;
 }
 @keyframes blink {
   0% {
