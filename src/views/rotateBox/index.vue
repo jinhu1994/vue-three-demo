@@ -24,6 +24,11 @@ export default {
       mesh: null,
       controls: null,
       stats: null,
+      observer: null,
+      recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
+        width: '0',
+        height: '0'
+      }
     }
   },
   mounted() {
@@ -46,7 +51,7 @@ export default {
        *  已知三维向量 b = (x2,y2,z2)
        *  向量A与向量B垂直则表示为： x1*x2 + y1*y2 + z1*z2 = 0
        */
-      this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
+      this.camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 1, 1000)
       this.camera.position.z = 3 // 相机位置
       this.camera.position.y = 3
       this.camera.position.x = 3
@@ -72,14 +77,32 @@ export default {
       container.appendChild(this.renderer.domElement)
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
-      //   window.addEventListener('resize', () => this.onWindowResize());
-
+      this.ondivResize(container)
     },
 
-    onWindowResize() {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth / window.innerHeight);
+    ondivResize(element) {
+      debugger
+      // 实例化 MutationObserver 对象
+      let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+      this.observer = new MutationObserver((mutationList) => {
+        for (let mutation of mutationList) {
+          console.log(mutation)
+        }
+        let width = getComputedStyle(element).getPropertyValue('width')
+        let height = getComputedStyle(element).getPropertyValue('height')
+        if (width === this.recordOldValue.width && height === this.recordOldValue.height) return
+        this.recordOldValue = {
+          width,
+          height
+        }
+        console.log("ondivResize---------->",width,height)
+        this.camera.aspect = container.clientWidth / container.clientHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(container.clientWidth / container.clientHeight);
+      })
+
+      this.observer.observe(element, { attributes: true, attributeFilter: ['style'], attributeOldValue: true })
+
     },
 
     render() {

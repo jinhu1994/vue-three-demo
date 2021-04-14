@@ -38,28 +38,16 @@ export const constantRoutes = [
   },
 
   {
-    path: "/",
-    component: Layout,
-    redirect: "/dashboard",
-    children: [
-      {
-        path: "dashboard",
-        name: "Dashboard",
-        component: () => import("@/views/dashboard/index"),
-        meta: { title: "Dashboard", icon: "dashboard" }
-      }
-    ]
-  },
-
-  {
     path: "/rotateBox",
     component: Layout,
+    redirect: "/rotateBox/index",
+    meta: { title: "box", icon: "dashboard" },
     children: [
       {
-        path: "rotateBox",
+        path: "index",
         name: "RotateBox",
         component: () => import("@/views/rotateBox/index"),
-        meta: { title: "rotateBox", icon: "dashboard" }
+        meta: { title: "rotateBox" }
       }
     ]
   },
@@ -67,41 +55,56 @@ export const constantRoutes = [
   {
     path: "/texture",
     component: Layout,
-    redirect: "/texture",
+    redirect: "/texture/index",
+    meta: { title: "纹理test", icon: "dashboard" },
     children: [
       {
-        path: "texture",
+        path: "index",
         name: "Texture",
         component: () => import("@/views/texture/index"),
-        meta: { title: "texture", icon: "dashboard" }
+        meta: { title: "texture" }
       }
     ]
   },
 
   {
-    path: "/vtkLoader",
+    path: "/loader",
     component: Layout,
-    redirect: "/vtkLoader",
+    redirect: "/loader/vtkLoader",
+    meta: { title: "模型加载器", icon: "dashboard" },
     children: [
       {
         path: "vtkLoader",
         name: "VtkLoader",
-        component: () => import("@/views/vtkLoader/index"),
-        meta: { title: "vtkLoader", icon: "dashboard" }
+        component: () => import("@/views/loader/vtkLoader/index"),
+        meta: { title: "vtkLoader" }
+      },
+      {
+        path: "objLoader",
+        name: "ObjLoader",
+        component: () => import("@/views/loader/objLoader/index"),
+        meta: { title: "objLoader" }
       }
     ]
   },
 
   {
-    path: "/bufferGeometry",
+    path: "/buffer",
     component: Layout,
-    redirect: "/bufferGeometry",
+    redirect: "/buffer/triangle",
+    meta: { title: "BufferGeometry", icon: "nested" },
     children: [
       {
-        path: "bufferGeometry",
-        name: "BufferGeometry",
-        component: () => import("@/views/bufferGeometry/index"),
-        meta: { title: "bufferGeometry", icon: "nested" }
+        path: "triangle",
+        name: "Triangle",
+        component: () => import("@/views/bufferGeometry/triangle/index"),
+        meta: { title: "三角形" }
+      },
+      {
+        path: "point",
+        name: "Point",
+        component: () => import("@/views/bufferGeometry/particles/index"),
+        meta: { title: "粒子" }
       }
     ]
   },
