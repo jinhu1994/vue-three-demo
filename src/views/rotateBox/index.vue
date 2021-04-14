@@ -24,18 +24,19 @@ export default {
       mesh: null,
       controls: null,
       stats: null,
-      observer: null,
-      recordOldValue: { // 记录下旧的宽高数据，避免重复触发回调函数
-        width: '0',
-        height: '0'
-      }
     }
   },
   mounted() {
     this.init()
     this.render()
-
-    // this.controls.addEventListener('change', this.render);//监听鼠标、键盘事件,如果使用animate方法时，将此函数删除
+  },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+    if (this.controls) this.controls = null
+    if (this.stats) this.stats = null
   },
   methods: {
     init() {
@@ -76,33 +77,6 @@ export default {
       this.renderer.setClearColor(0xb9d3ff, 1)
       container.appendChild(this.renderer.domElement)
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-
-      this.ondivResize(container)
-    },
-
-    ondivResize(element) {
-      debugger
-      // 实例化 MutationObserver 对象
-      let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
-      this.observer = new MutationObserver((mutationList) => {
-        for (let mutation of mutationList) {
-          console.log(mutation)
-        }
-        let width = getComputedStyle(element).getPropertyValue('width')
-        let height = getComputedStyle(element).getPropertyValue('height')
-        if (width === this.recordOldValue.width && height === this.recordOldValue.height) return
-        this.recordOldValue = {
-          width,
-          height
-        }
-        console.log("ondivResize---------->",width,height)
-        this.camera.aspect = container.clientWidth / container.clientHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(container.clientWidth / container.clientHeight);
-      })
-
-      this.observer.observe(element, { attributes: true, attributeFilter: ['style'], attributeOldValue: true })
-
     },
 
     render() {

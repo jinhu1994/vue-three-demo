@@ -29,6 +29,13 @@ export default {
       this.render()
     }
   },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+    if (this.stats) this.stats = null
+  },
   methods: {
     init() {
       let _this = this
@@ -178,10 +185,10 @@ export default {
       geometry.computeBoundingSphere(); // 计算集合体的边界
 
       var material = new THREE.MeshPhongMaterial({
-        color: 0xaaaaaa, 
+        color: 0xaaaaaa,
         specular: 0xffffff, // 材质光泽的颜色，默认值为0x111111（深灰色）的颜色
         shininess: 250, // 材质的光泽度，默认为30
-        side: THREE.DoubleSide, 
+        side: THREE.DoubleSide,
         vertexColors: THREE.VertexColors
       });
 

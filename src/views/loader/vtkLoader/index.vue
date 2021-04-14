@@ -32,14 +32,14 @@ export default {
       this.render()
     }
   },
-  // destroyed(){
-  //   this.camera = null
-  //   this.scene = null
-  //   this.renderer = null
-  //   this.mesh = null
-  //   this.controls = null
-  //   this.stats = null
-  // },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+    if (this.controls) this.controls = null
+    if (this.stats) this.stats = null
+  },
   methods: {
     init: function () {
       let _this = this

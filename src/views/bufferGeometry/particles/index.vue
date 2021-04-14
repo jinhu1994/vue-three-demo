@@ -29,6 +29,13 @@ export default {
       this.render()
     }
   },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+    if (this.stats) this.stats = null
+  },
   methods: {
     init() {
       let _this = this

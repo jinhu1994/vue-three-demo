@@ -31,6 +31,14 @@ export default {
     this.init();
     this.animate();
   },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.group) this.group = null
+    if (this.objects) this.objects = []
+    if (this.targets) this.targets = { grid: [], sphere: [], helix: [] }
+  },
   methods: {
     init() {
       let _this = this

@@ -23,13 +23,19 @@ export default {
       stats: null
     }
   },
-  created() {
-
-  },
   mounted() {
     this.init()
     this.render()
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+  },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+    if (this.boxMesh) this.boxMesh = null
+    if (this.controls) this.controls = null
+    if (this.stats) this.stats = null
   },
   methods: {
     init() {
