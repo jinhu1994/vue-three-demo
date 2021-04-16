@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <div class="page-des">使用VTKLoader加载器加载3D兔子模型</div>
+    <div class="page-des">使用ObjLoader加载器加载人物模型</div>
     <div
-      id="vtkLoader"
+      ref="objLoader"
       class="three-area"
     ></div>
   </div>
@@ -10,10 +10,7 @@
 
 <script>
 import * as THREE from 'three'
-import { VTKLoader } from 'three/examples/jsm/loaders/VTKLoader.js' // vtk文件加载器
-import { WEBGL } from 'three/examples/jsm/WebGL.js' // 判断浏览器是否支持webGl
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import Stats from 'three/examples/jsm/libs/stats.module.js' // JavaScript性能监视器
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js' // vtk文件加载器
 
 export default {
   data() {
@@ -22,80 +19,99 @@ export default {
       scene: null,
       renderer: null,
       mesh: null,
-      controls: null,
-      stats: null,
+      mouseX: 0,
+      mouseY: 0,
+      windowHalfX: 0,
+      windowHalfY: 0
     }
   },
   mounted() {
-    if (WEBGL.isWebGLAvailable()) {
-      this.init()
-      this.render()
-    }
+    this.init()
+    this.animate()
   },
-  // destroyed(){
-  //   this.camera = null
-  //   this.scene = null
-  //   this.renderer = null
-  //   this.mesh = null
-  //   this.controls = null
-  //   this.stats = null
-  // },
+  beforeDestroy() {
+    if (this.camera) this.camera = null
+    if (this.scene) this.scene = null
+    if (this.renderer) this.renderer = null
+    if (this.mesh) this.mesh = null
+  },
   methods: {
     init: function () {
       let _this = this
-      const container = document.getElementById('vtkLoader')
-      this.stats = new Stats() // JavaScript性能监视器
-      this.stats.domElement.style.position = 'absolute'
-      this.stats.domElement.style.top = '50px'
-      this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
-      container.appendChild(this.stats.domElement)
+      const container = _this.$refs.objLoader
+      _this.windowHalfX = container.clientWidth / 2
+      _this.windowHalfY = container.clientHeight / 2
 
       this.scene = new THREE.Scene()
-      this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1e10);
-      this.camera.position.z = 0.3;
+      this.camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 1, 2000);
+      this.camera.position.z = 200;
 
       this.scene = new THREE.Scene();
 
       this.scene.add(this.camera);
 
-      // light
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
-      this.scene.add(hemiLight);
+      /**
+       * light
+       * AmbientLight( color : Integer, intensity : Float )
+       * color - (参数可选）颜色的rgb数值。缺省值为 0xffffff。
+       * intensity - (参数可选)光照的强度。缺省值为 1。
+       */
+      const ambient = new THREE.AmbientLight(0x101030);
+      this.scene.add(ambient);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      dirLight.position.set(2, 2, 2);
-      this.scene.add(dirLight);
+      var directionalLight = new THREE.DirectionalLight(0xffeedd);
+      directionalLight.position.set(0, 0, 1);
+      this.scene.add(directionalLight);
 
-      var material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+      // texture
+      var manager = new THREE.LoadingManager();
+      manager.onProgress = function (item, loaded, total) {
+        console.log(item, loaded, total);
+      };
+      var texture = new THREE.Texture();
+      var loader = new THREE.ImageLoader(manager);
+      loader.load('textureImage/UV_Grid_Sm.jpg', function (image) {
 
-
-      var loader = new VTKLoader();
-      loader.load('/bunny.vtk', function (geometry) {
-        geometry.center(); // 让3D模型居中显示
-        geometry.computeVertexNormals(); // 计算面的法向量
-        _this.mesh = new THREE.Mesh(geometry, material);
-        // mesh.position.setY(- 0.09);
-        _this.scene.add(_this.mesh);
+        texture.image = image;
+        texture.needsUpdate = true;
 
       });
 
-      this.renderer = new THREE.WebGLRenderer({ antialias: true })
-      this.renderer.setSize(container.clientWidth, container.clientHeight)
-      this.renderer.setClearColor(0x000000, 1)
-      container.appendChild(this.renderer.domElement)
+      // model
+      var loader = new OBJLoader(manager);
+      loader.load('/objModel/male02.obj', function (object) {
+        object.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material.map = texture;
+          }
+        });
+        object.position.y = - 80;
+        _this.scene.add(object);
 
-      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-      // this.controls.addEventListener('change', this.render);//监听鼠标、键盘事件,如果使用animate方法时，将此函数删除
+      }, onProgress, onError);
+
+      var onProgress = function (xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+      };
+
+      var onError = function (xhr) {
+      };
+
+
+      _this.renderer = new THREE.WebGLRenderer({ antialias: true })
+      _this.renderer.setPixelRatio(window.devicePixelRatio);
+      _this.renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(_this.renderer.domElement);
+
     },
-    render() {
-      this.stats.begin()
+
+    animate() {
       this.renderer.clear()
       this.renderer.render(this.scene, this.camera)
-      if (this.mesh) {
-        this.mesh.rotation.y += 0.01
-      }
-      this.stats.end()
-      requestAnimationFrame(this.render)
+      requestAnimationFrame(this.animate)
     },
 
   }
