@@ -124,6 +124,19 @@ export const constantRoutes = [
   },
 
   {
+    path: "/particle",
+    component: Layout,
+    children: [
+      {
+        path: "figure",
+        name: "Figure",
+        component: () => import("@/views/particle/figure/index"),
+        meta: { title: "Figure", icon: "nested" }
+      }
+    ]
+  },
+
+  {
     path: "/404",
     component: () => import("@/views/404"),
     hidden: true

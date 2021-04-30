@@ -10,7 +10,7 @@
 
 <script>
 import * as THREE from 'three'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js' // vtk文件加载器
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 
 export default {
   data() {
