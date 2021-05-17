@@ -11,7 +11,7 @@
 import * as THREE from 'three'
 import { LegacyJSONLoader } from '@/utils/LegacyJSONLoader.js'
 import { BinaryLoader } from '@/utils/BinaryLoader.js'
-
+var clock = new THREE.Clock();
 export default {
   data() {
     return {
@@ -21,7 +21,7 @@ export default {
       parent: null,
       mesh: null,
       clonesMeshes: [],
-      meshes: []
+      meshes: [],
     }
   },
   mounted() {
@@ -39,7 +39,7 @@ export default {
       const _this = this
       const container = _this.$refs.figure
       _this.camera = new THREE.PerspectiveCamera(20, container.clientWidth / container.clientHeight, 1, 50000)
-      _this.camera.position.set(0, 700, 7000)
+      _this.camera.position.set(0, 700, 13000)
 
       _this.scene = new THREE.Scene()
       _this.scene.fog = new THREE.FogExp2(0x000104, 0.0000675);
@@ -155,8 +155,6 @@ export default {
         [0, 0, 0] // 原始位置
       ];
 
-      var clonesMeshes = []
-
       // 模型上到下，或者下到上，静态的物体，动态物体 ，生产points
       if (dynamic) {
         for (let j = 0; j < clones.length; j++) {
@@ -211,16 +209,116 @@ export default {
 
 
     animate() {
-      this.render()
       requestAnimationFrame(this.animate)
+      this.render()
     },
 
     render() {
+
+      const _this = this
       // 计算每一帧的时间
+      let delta = 10 * clock.getDelta();
+
+      delta < 2 ? delta : 2
+
+      _this.parent.rotation.y += -0.02 * delta
 
       // 根据模型的 动/静状态 调整模型每个顶点的位置 
-      this.renderer.clear()
-      this.renderer.render(this.scene, this.camera)
+      for (let i = 0; i < _this.meshes.length; i++) {
+        let item = _this.meshes[i]
+        let mesh = item.mesh
+        let vertices = item.vertices
+        let vertices_tmp = item.vertices_tmp
+        let vl = item.vl
+
+        // 判断粒子是否是动态的
+        if (!item.dynamic) continue
+
+        // 最开始的时候，没有移动，设置移动，向下
+        if (item.start > 0) {
+          item.start -= 1
+        } else {
+          // 开始动画
+          if (!item.started) {
+            item.started = true
+            item.direction = -1
+          }
+        }
+
+        for (let j = 0; j < vl; j++) {
+          let p = vertices[j]
+          let vt = vertices_tmp[j]
+          // 向下运动
+          if (item.direction < 0) {
+            if (p.y > 0) {
+              p.x += 1.5 * (0.50 - Math.random()) * item.speed * delta;
+              // 向下的概念明显大于向上的概率，所以整个人物总有一个时刻是向下的。
+              p.y += 3.0 * (0.15 - Math.random()) * item.speed * delta;
+              p.z += 1.5 * (0.50 - Math.random()) * item.speed * delta;
+            } else {
+              if (!vt[3]) {
+                vt[3] = 1
+                item.down += 1 // 记录运动到最底下模型点的个数
+              }
+            }
+          }
+
+          // 向上运动
+          if (item.direction > 0) {
+            let d = Math.abs(p.x - vt[0]) + Math.abs(p.y - vt[1]) + Math.abs(p.z - vt[2])
+
+            if (d > 1) {
+              p.x += -(p.x - vt[0]) / d * item.speed * delta * (0.85 - Math.random());
+              p.y += -(p.y - vt[1]) / d * item.speed * delta * (1 + Math.random());
+              p.z += -(p.z - vt[2]) / d * item.speed * delta * (0.85 - Math.random());
+
+            } else {
+              if (!vt[4]) {
+                vt[4] = 1;
+                item.up += 1;
+              }
+            }
+          }
+        }
+
+        if (item.down === vl) {
+          if (item.delay === 0) {
+            item.direction = 1;
+            item.speed = 10;
+            item.down = 0;
+            item.delay = 300;
+
+            for (i = 0; i < vl; i++) {
+              vertices_tmp[i][3] = 0;
+            }
+
+          } else {
+            item.delay -= 1;
+          }
+        }
+
+        if (item.up === vl) {
+          if (item.delay === 0) {
+            item.direction = -1;
+            item.speed = 10;
+            item.up = 0;
+            item.delay = 300;
+
+            for (i = 0; i < vl; i++) {
+              vertices_tmp[i][4] = 0;
+            }
+
+          } else {
+            item.delay -= 1;
+          }
+        }
+
+
+        mesh.geometry.verticesNeedUpdate = true;
+      }
+
+      _this.renderer.clear()
+      _this.renderer.render(_this.scene, _this.camera)
     }
 
 
