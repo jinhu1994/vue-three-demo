@@ -24,9 +24,9 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: "/",
-  outputDir: "dist",
-  assetsDir: "static",
+  publicPath: "/spsi-fe/",
+  outputDir: "docs",
+  assetsDir: "spsi-fe",
   lintOnSave: process.env.NODE_ENV === "development",
   productionSourceMap: false,
   devServer: {
@@ -84,8 +84,7 @@ module.exports = {
     config.module
       .rule("vtk")
       .test(/\.vtk$/)
-      .end()
-
+      .end();
 
     // 修改项目名称
     config.plugin("html").tap(args => {
