@@ -153,7 +153,10 @@ const createRouter = () =>
     routes: constantRoutes
   });
 
-const router = createRouter();
+const router = new VueRouter({
+  mode: "history",
+  base: "/spsi-fe"
+});
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
