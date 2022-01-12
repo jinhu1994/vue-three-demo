@@ -34,7 +34,7 @@ export const constantRoutes = [
   {
     path: "/login",
     component: () => import("@/views/login/index"),
-    hidden: true
+    hidden: true,
   },
 
   {
@@ -47,9 +47,9 @@ export const constantRoutes = [
         path: "index",
         name: "RotateBox",
         component: () => import("@/views/rotateBox/index"),
-        meta: { title: "rotateBox" }
-      }
-    ]
+        meta: { title: "rotateBox" },
+      },
+    ],
   },
 
   {
@@ -62,9 +62,9 @@ export const constantRoutes = [
         path: "index",
         name: "Texture",
         component: () => import("@/views/texture/index"),
-        meta: { title: "texture" }
-      }
-    ]
+        meta: { title: "texture" },
+      },
+    ],
   },
 
   {
@@ -77,15 +77,15 @@ export const constantRoutes = [
         path: "vtkLoader",
         name: "VtkLoader",
         component: () => import("@/views/loader/vtkLoader/index"),
-        meta: { title: "vtkLoader" }
+        meta: { title: "vtkLoader" },
       },
       {
         path: "objLoader",
         name: "ObjLoader",
         component: () => import("@/views/loader/objLoader/index"),
-        meta: { title: "objLoader" }
-      }
-    ]
+        meta: { title: "objLoader" },
+      },
+    ],
   },
 
   {
@@ -98,15 +98,15 @@ export const constantRoutes = [
         path: "triangle",
         name: "Triangle",
         component: () => import("@/views/bufferGeometry/triangle/index"),
-        meta: { title: "三角形" }
+        meta: { title: "三角形" },
       },
       {
         path: "point",
         name: "Point",
         component: () => import("@/views/bufferGeometry/particles/index"),
-        meta: { title: "粒子" }
-      }
-    ]
+        meta: { title: "粒子" },
+      },
+    ],
   },
 
   {
@@ -118,9 +118,9 @@ export const constantRoutes = [
         path: "css3Renderer",
         name: "Css3Renderer",
         component: () => import("@/views/css3Renderer/index"),
-        meta: { title: "css3Renderer", icon: "nested" }
-      }
-    ]
+        meta: { title: "css3Renderer", icon: "nested" },
+      },
+    ],
   },
 
   {
@@ -131,32 +131,29 @@ export const constantRoutes = [
         path: "figure",
         name: "Figure",
         component: () => import("@/views/particle/figure/index"),
-        meta: { title: "Figure", icon: "nested" }
-      }
-    ]
+        meta: { title: "Figure", icon: "nested" },
+      },
+    ],
   },
 
   {
     path: "/404",
     component: () => import("@/views/404"),
-    hidden: true
+    hidden: true,
   },
 
   // 404 page must be placed at the end !!!
-  { path: "*", redirect: "/404", hidden: true }
+  { path: "*", redirect: "/404", hidden: true },
 ];
 
 const createRouter = () =>
   new Router({
-    // mode: 'history', // require service support
+    mode: "history", // require service support
     scrollBehavior: () => ({ y: 0 }),
-    routes: constantRoutes
+    routes: constantRoutes,
   });
 
-const router = new VueRouter({
-  mode: "history",
-  base: "/spsi-fe"
-});
+const router = new VueRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
