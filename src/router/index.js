@@ -153,7 +153,7 @@ const createRouter = () =>
     routes: constantRoutes,
   });
 
-const router = new VueRouter();
+const router = new createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
